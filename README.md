@@ -3,11 +3,6 @@ TeamLoad
 
 ## Overview
 
+Quick check of whether the capacity of each team member is going to be exceeded this print. To use this, you need to log hours daily or it's garbage-in,garbage-out
 
-## License
-
-AppTemplate is released under the MIT license.  See the file [LICENSE](./LICENSE) for the full text.
-
-##Documentation for SDK
-
-You can find the documentation on our help [site.](https://help.rallydev.com/apps/2.0/doc/)
+![alt text](https://github.com/nikantonelli/TeamLoading/blob/master/Images/teamload.jpg)
