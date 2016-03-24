@@ -8,6 +8,8 @@ Ext.define('CustomApp', {
         app.add({
             xtype: 'rallyiterationcombobox',
             fieldLabel: 'Choose Iteration:',
+            stateId: Ext.id() + 'iterBox',
+            stateful: true,
             maxWidth: 600,
             width: 600,
             id: 'iterCbx',
@@ -98,8 +100,8 @@ Ext.define('CustomApp', {
                                                 return Ext.String.format('<p style="background-color:red;color:white;text-align:center">NOT SET</p>');
                                         }
                                     },
-                                    { text: 'Planned Task Hours', dataIndex: 'Planned', width: 110 },
-                                    { text: 'Completed Task Hours', dataIndex: 'Actual', width: 120 },
+                                    { text: 'To-Do Task Hours', dataIndex: 'Planned', width: 110 },
+                                    { text: 'Timesheet Hours', dataIndex: 'Actual', width: 120 },
                                     { text: 'Status', dataIndex: 'StatusFail', width: 50,
                                         renderer: function(status) {
                                             if (status)
@@ -152,7 +154,6 @@ Ext.define('CustomApp', {
                         var user = tableStore.findRecord('Ref', rec.get('User')._ref);
                         if ( user ) {
                             user.set('IterationCapacity', rec.get('Capacity'));
-                            user.set('Planned', rec.get('TaskEstimates'));
                         } else {
                             //Need to log this??? It means someone is doing stuff but not a team member?
                         }
@@ -188,13 +189,16 @@ Ext.define('CustomApp', {
                 listeners: {
                     load: function(store, records, success) {
                         var actualsTotal = 0;
+                        var leftTotal = 0;
+
                         _.each(records, function(rec) {
                             if (rec.get('TimeSpent')) actualsTotal += rec.get('TimeSpent');
-
+                            if (rec.get('ToDo')) leftTotal += rec.get('ToDo');
                         });
                         if (records.length) {
                             var user = tableStore.findRecord('Ref', records[0].get('Owner')._ref);
                             user.set('Actual', actualsTotal);
+                            user.set('Planned', leftTotal);
                             app._checkUserStatus();
                         }
                     }
