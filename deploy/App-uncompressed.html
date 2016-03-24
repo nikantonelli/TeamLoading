@@ -56,7 +56,7 @@
 
         tableStore = Ext.create('Ext.data.Store', {
             storeId: 'userLoad',
-            fields: ['UserName', 'Ref', 'IterationCapacity', 'Planned', 'Actual', 'StatusFail'],
+            fields: ['UserName', 'Ref', 'IterationCapacity', 'Planned', 'Actual', 'Load', 'StatusFail'],
             proxy: {
                 type: 'memory',
                 reader: {
@@ -98,7 +98,7 @@
                             userPanel = Ext.create ('Ext.grid.Panel', {
                                 title: 'Team Member Planned vs Actual Loading to-date',
                                 store: tableStore,
-                                width: 500,
+                                width: 600,
                                 columns: [
                                     { text: 'Name', dataIndex: 'UserName',  width: 140 },
                                     { text: 'Capacity', dataIndex: 'IterationCapacity', width: 79,
@@ -111,13 +111,32 @@
                                     },
                                     { text: 'To-Do Task Hours', dataIndex: 'Planned', width: 110 },
                                     { text: 'Timesheet Hours', dataIndex: 'Actual', width: 120 },
-                                    { text: 'Status', dataIndex: 'StatusFail', width: 50,
-                                        renderer: function(status) {
-                                            if (status)
-                                                return Ext.String.format('<p style="background-color:red;color:white;text-align:center">FAIL</p>');
-                                            else
-                                                return Ext.String.format('<p style="background-color:green;color:white;text-align:center">OK</p>');
-                                        }
+//                                    { text: 'Status', dataIndex: 'StatusFail', width: 50,
+//                                        renderer: function(status) {
+//                                            if (status)
+//                                                return Ext.String.format('<p style="background-color:red;color:white;text-align:center">FAIL</p>');
+//                                            else
+//                                                return Ext.String.format('<p style="background-color:green;color:white;text-align:center">OK</p>');
+//                                        }
+//                                    }
+
+                                    {
+                                        text: 'Load',
+                                        flex: 1,
+                                        xtype: 'templatecolumn',
+                                        tpl: Ext.create('Rally.ui.renderer.template.progressbar.ProgressBarTemplate', {
+                                            percentDoneName: 'Load',
+                                            calculateColorFn: function(recordData) {
+                                                if (recordData.Load < 0.8) {
+                                                    colVal = "#B2E3B6"; // Green
+                                                } else if (recordData.Load < 1.0) {
+                                                    colVal = "#FBDE98"; // Orange
+                                                } else {
+                                                    colVal = "#FCB5B1"; // Red
+                                                }
+                                                return colVal;
+                                            }
+                                        })
                                     }
                                 ]
                             });
@@ -143,7 +162,8 @@
         var records = userPanel.store.data.items;
 
         _.each(records, function (rec) {
-            rec.set('StatusFail', (rec.get('Planned') + rec.get('Actual')) > rec.get('IterationCapacity'));
+//            rec.set('StatusFail', (rec.get('Planned') + rec.get('Actual')) > rec.get('IterationCapacity'));
+            rec.set('Load', (rec.get('Planned') + rec.get('Actual')) / rec.get('IterationCapacity'));
         });
         userPanel.store.sync();
     },
