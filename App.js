@@ -87,9 +87,10 @@ Ext.define('CustomApp', {
                             userPanel = Ext.create ('Ext.grid.Panel', {
                                 title: 'Team Member Planned vs Actual Loading to-date',
                                 store: tableStore,
+                                width: 500,
                                 columns: [
-                                    { text: 'Name', dataIndex: 'UserName', flex: 1 },
-                                    { text: 'Capacity', dataIndex: 'IterationCapacity',
+                                    { text: 'Name', dataIndex: 'UserName',  width: 140 },
+                                    { text: 'Capacity', dataIndex: 'IterationCapacity', width: 79,
                                         renderer: function(capacity) {
                                             if (capacity)
                                                 return Ext.String.format('{0}', capacity);
@@ -97,8 +98,8 @@ Ext.define('CustomApp', {
                                                 return Ext.String.format('<p style="background-color:red;color:white;text-align:center">NOT SET</p>');
                                         }
                                     },
-                                    { text: 'Planned Task Hours', dataIndex: 'Planned', width: 150 },
-                                    { text: 'Completed Task Hours', dataIndex: 'Actual', width: 150 },
+                                    { text: 'Planned Task Hours', dataIndex: 'Planned', width: 110 },
+                                    { text: 'Completed Task Hours', dataIndex: 'Actual', width: 120 },
                                     { text: 'Status', dataIndex: 'StatusFail', width: 50,
                                         renderer: function(status) {
                                             if (status)
