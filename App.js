@@ -1,6 +1,13 @@
 Ext.define('CustomApp', {
     extend: 'Rally.app.App',
     componentCls: 'app',
+
+    config: {
+        defaultSettings: {
+            taskActuals: true
+        }
+    },
+
     launch: function() {
 
         var app = this;
@@ -29,6 +36,16 @@ Ext.define('CustomApp', {
         userPanel.destroy();
         tableStore.destroy();
         this._iterationLoad();
+    },
+
+    getSettingsFields: function() {
+        return [
+            {
+                xtype: 'rallycheckboxfield',
+                fiedlLabel: 'Use Actuals field',
+                name: 'taskActuals'
+            }
+        ];
     },
 
     _iterationLoad: function() {
@@ -101,7 +118,7 @@ Ext.define('CustomApp', {
                                         }
                                     },
                                     { text: 'To-Do Task Hours', dataIndex: 'Planned', width: 110 },
-                                    { text: 'Timesheet Hours', dataIndex: 'Actual', width: 120 },
+                                    { text: app.getSetting('taskActuals')?'Actuals':'Timesheet Hours', dataIndex: 'Actual', width: 120 },
 //                                    { text: 'Status', dataIndex: 'StatusFail', width: 50,
 //                                        renderer: function(status) {
 //                                            if (status)
@@ -212,7 +229,11 @@ Ext.define('CustomApp', {
                         var leftTotal = 0;
 
                         _.each(records, function(rec) {
-                            if (rec.get('TimeSpent')) actualsTotal += rec.get('TimeSpent');
+                            if (app.getSetting('taskActuals')) {
+                                if (rec.get('Actuals')) actualsTotal += rec.get('Actuals');
+                            } else {
+                                if (rec.get('TimeSpent')) actualsTotal += rec.get('TimeSpent');
+                            }
                             if (rec.get('ToDo')) leftTotal += rec.get('ToDo');
                         });
                         if (records.length) {
